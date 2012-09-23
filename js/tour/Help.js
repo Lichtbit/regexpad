@@ -9,7 +9,7 @@
 function Help() {
 	var $this = this,
 		darkRoom = $('<div>press escape to exit tour</div>'),
-		reghex = '<span class="appname">reg<strong>[h]?</strong>ex</span>';
+		reghex = '<span class="appname">regex<strong>pad</strong></span>';
 
 	darkRoom.attr('id', 'darkRoom').appendTo('body');
 	this._lastTimeout = null;

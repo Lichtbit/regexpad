@@ -326,6 +326,7 @@ header small {
 }
 .appname strong {
 	color: #E04F3D;
+  font-weight:normal;
 }
 .js #no-js-warning {
 	display: none;
