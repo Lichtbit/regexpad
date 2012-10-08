@@ -10,143 +10,130 @@
  * @param {String[][]} urls Array of info urls
  * @param {Function} parser function to parse
  */
-function RegularExpression(name, flags, urls, parser) {
-
-	/**
-	 * Name of the parser
-	 * @type String
-	 */
-	this._name = name;
-
-	/**
-	 * Allowed flags
-	 * @type String
-	 */
-	this._flags = flags;
-
-	/**
-	 * Information urls
-	 * @type String[][]
-	 */
-	this._urls = urls;
-
-	/**
-	 * Regular expression to parse
-	 * @type String
-	 */
-	this._expression = '';
-
-	/**
-	 * Set flags
-	 * @param String
-	 */
-	this._setFlags = [];
-
-	/**
-	 * Function for parse
-	 * @param Function
-	 */
-	this._parser = parser;
+function RegularExpression(_name, _flags, _urls, _parser) {
+    "use strict";
 
 
-	/**
-	 * Returns the name
-	 * @returns {String} name
-	 */
-	this.getName = function() {
-		return this._name;
-	}
-
-	/**
-	 * Returns the allowed flags
-	 * @returns {Flags[]} flags
-	 */
-	this.getFlags = function() {
-		return this._flags;
-	}
-
-	/**
-	 * Returns information urls
-	 * @returns {String[][]} urls
-	 */
-	this.getUrls = function() {
-		return this._urls;
-	}
+    /**
+     * Regular expression to parse
+     * @type String
+     */
+    var _expression = '';
 
 
-	/**
-	 * Sets a new regular expression
-	 * @param {String} expression e.g. "[a-z]+"
-	 * @returns this
-	 */
-	this.setRegularExpression = function (expression) {
-		this._expression = expression;
-		return this;
-	};
+    /**
+     * Set flags
+     * @param String
+     */
+    var _setFlags = [];
 
-	/**
-	 * Sets the expression flags
-	 * @param {String[]} flags e.g. ["i","g"]
-	 * @returns this
-	 */
-	this.setFlags = function (flags) {
-		this._setFlags = flags;
-		return this;
-	};
 
-  /**
-   * Return the set flags
-   * @returns {String[]}
-   */
-  this.getSetFlags = function () {
-    return this._setFlags;
-  };
+    /**
+     * Returns the name
+     * @returns {String} name
+     */
+    this.getName = function() {
+        return _name;
+    };
 
-  /**
-   * Returns the set regular expression
-   * @returns {String}
-   */
-  this.getRegularExpression = function () {
-    return this._expression;
-  };
 
-	/**
-	 * Parse a text and return result to callback
-	 * @param {String} text text to parse
-	 * @param {Function} callback Callback for result
-	 * @returns this
-	 */
-	this.parse  = function (text, callback) {
+    /**
+     * Returns the allowed flags
+     * @returns {Flags[]} flags
+     */
+    this.getFlags = function() {
+        return _flags;
+    };
 
-		// check in cache for value
-		var cache = RegularExpressionCache.getValue(
-			text,
-			this._expression,
-			this._setFlags,
-			this._name
-		);
 
-		if (typeof cache != 'boolean') {
-			console.debug('Callback (from cache)', cache);
-			callback(cache);
-			return this;
-		}
+    /**
+     * Returns information urls
+     * @returns {String[][]} urls
+     */
+    this.getUrls = function() {
+        return _urls;
+    }
 
-		// otherwise call parser
-		new parser(this, text, this._expression, this._setFlags, function(data) {
-			console.debug('Callback (live parsed)', data);
 
-			// error handling
-			if (!data || typeof data.error == "undefined") {
-				return;
-			}
+    /**
+     * Sets a new regular expression
+     * @param {String} expression e.g. "[a-z]+"
+     * @returns this
+     */
+    this.setRegularExpression = function (expression) {
+        _expression = expression;
+        return this;
+    };
 
-			// add value to cache
-			RegularExpressionCache.addValue(data);
 
-			// call original callback
-			callback(data);
-		});
-		return this;
-	};
+    /**
+     * Sets the expression flags
+     * @param {String[]} flags e.g. ["i","g"]
+     * @returns this
+     */
+    this.setFlags = function (flags) {
+        _setFlags = flags;
+        return this;
+    };
+
+
+    /**
+     * Return the set flags
+     * @returns {String[]}
+     */
+    this.getSetFlags = function () {
+        return _setFlags;
+    };
+
+
+    /**
+     * Returns the set regular expression
+     * @returns {String}
+     */
+    this.getRegularExpression = function () {
+        return _expression;
+    };
+
+
+    /**
+     * Parse a text and return result to callback
+     * @param {String} text text to parse
+     * @param {Function} callback Callback for result
+     * @returns this
+     */
+    this.parse  = function (text, callback) {
+
+        // check in cache for value
+        var cache = RegularExpressionCache.getValue(
+            text,
+            _expression,
+            _setFlags,
+            _name
+        );
+
+        if (typeof cache != 'boolean') {
+
+            // found in cache
+            callback(cache);
+            return this;
+        }
+
+
+        // otherwise call parser
+        new _parser(this, text, _expression, _setFlags, function(data) {
+
+            // error handling
+            if (!data || typeof data.error == "undefined") {
+                return;
+            }
+
+            // add value to cache
+            RegularExpressionCache.addValue(data);
+
+            // call original callback
+            callback(data);
+        });
+
+        return this;
+    };
 }

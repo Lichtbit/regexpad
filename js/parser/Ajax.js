@@ -12,23 +12,20 @@
  * @param {Function} callback Callback function for data result
  */
 function ParserAjax(config, text, expression, flags, callback) {
-	this._URL = 'parser/parser.php';
+    "use strict";
+
+    // url for ajax requests
+    var URL = 'parser/parser.php';
 
 
-	this._config = config;
-	this._text = text;
-	this._expression = expression;
-	this._flags = flags;
-	this._callback = callback;
 
-
-	// post to server parser
-	$.post(this._URL, {
-			json: $.toJSON({
-				"parser": this._config.getName(),
-				"regularExpression": this._expression,
-				"flags": this._flags,
-				"matchText": this._text
-			})
-		}, callback, "json");
+    // post to server parser
+    $.post(URL, {
+            json: $.toJSON({
+                "parser": config.getName(),
+                "regularExpression": expression,
+                "flags": flags,
+                "matchText": text
+            })
+        }, callback, "json");
 }

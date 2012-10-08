@@ -12,78 +12,90 @@
  * @param {Function} callback Callback function for data result
  */
 function ParserJavascript(config, text, expression, flags, callback) {
+    "use strict";
 
-	this._config = config;
-	this._text = text;
-	this._expression = expression;
-	this._flags = flags;
-	this._callback = callback;
+    var escapeString = function ( text ) {
+        return text.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+    };
 
-  this._escapeString = function (text) {
-    return text.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
-  };
+    // search flags
+    var flagString = "";
+
+    // global search
+    var global = false;
+
+    // indizies and counters
+    var i, l;
+
+    // regex object
+    var regex;
+
+    // match object
+    var match;
+
+    // array of all matches
+    var matches = [];
 
 
+    // catch javascript exceptions from parser
+    try {
 
-	// catch javascript exceptions from parser
-	try {
-		// check flags
-		var flags = "", global = false;
-		for (var i = 0; i < this._flags.length; i++) {
-			switch (this._flags[i]) {
-			case "g":
-				flags += "g";
-				global = true;
-				break;
-			case "m":
-				flags += "m";
-				break;
-			case "i":
-				flags += "i";
-				break;
-			}
-		}
+        // check flags
+        for (i = 0, l = flags.length; i < l; i++) {
+            switch (flags[i]) {
+            case "g":
+                flagString += "g";
+                global = true;
+                break;
+            case "m":
+                flagString += "m";
+                break;
+            case "i":
+                flagString += "i";
+                break;
+            }
+        }
 
-		// generate regular expression object
-		var regex = new RegExp(this._expression, flags);
+        // generate regular expression object
+        regex = new RegExp(expression, flagString);
 
-		var match, matches = [];
+        // for each match
+        while ((match = regex.exec(text)) != null) {
 
-		while ((match = regex.exec(this._text)) != null) {
+            matches[matches.length] = {
+                text: match[0],
+                index: match.index,
+                subexpressions: match
+            };
 
-			matches[matches.length] = {
-				text: match[0],
-				index: match.index,
-				subexpressions: match
-			};
+            // only one loop if not global search or an empty result
+            if (!global || match[0] == '') break;
+        }
 
-			// only one loop if not global search or an empty result
-			if (!global || match[0] == '') break;
-		}
-
-		callback( {
-			"parser": "javascript",
-			"regularExpression": this._expression,
-			"flags": this._flags,
-			"matchText": this._text,
-			"error": false,
-			"matchings": matches,
-			"programming":
-				"var text = '" + this._escapeString(this._text) + "',\n" +
-        "  match;\n" +
-				"while ((match = text.match(/"+this._expression+"/"+flags+"))) {\n" +
-				"  console.log(match[0], match);\n" +
-				"}\n"
-		});
-	} catch (e) {
-		callback( {
-			"parser": "javascript",
-			"regularExpression": this._expression,
-			"flags": this._flags,
-			"matchText": this._text,
-			"error": e.message,
-			"matchings": [],
-			"progamming": "",
-		});
-	}
+        callback( {
+            "parser": "javascript",
+            "regularExpression": expression,
+            "flags": flags,
+            "matchText": text,
+            "error": false,
+            "matchings": matches,
+            "programming":
+                "var text = '" + escapeString(text) + "';\n" +
+                "var match;\n" +
+                "\n" +
+                "while ((match = text.match(/" + expression + "/" + flagString + "))) {\n" +
+                "  console.log(match[0], match);\n" +
+                "}\n"
+        });
+    } catch (e) {
+        callback( {
+            "parser": "javascript",
+            "regularExpression": expression,
+            "flags": flags,
+            "matchText": text,
+            "error": e.message,
+            "matchings": [],
+            "progamming": "",
+        });
+    }
 }
