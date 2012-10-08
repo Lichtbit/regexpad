@@ -127,6 +127,9 @@ function Help() {
 		}
 	});
 
+    // close all fields
+    $('.remove-matchtext').click();
+
 	// initiation
 	$('#help-current-task').html('').show();
 	this._runStep(0);
