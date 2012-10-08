@@ -7,19 +7,21 @@
  * @constructor
  */
 function SetMessageStep(message) {
-	var div = $('#help-current-task');
+    "use strict";
 
-	/**
-	 * run method
-	 * @type Function
-	 */
-	this.run = function() {
-		div.html(message);
-	};
 
-	/**
-	 * time for this step
-	 * @type int
-	 */
-	this.time = 100;
+    /**
+     * run method
+     * @type Function
+     */
+    this.run = function() {
+        $('#help-current-task').html(message);
+    };
+
+
+    /**
+     * time for this step
+     * @type int
+     */
+    this.time = 100;
 }

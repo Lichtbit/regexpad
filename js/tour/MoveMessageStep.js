@@ -10,53 +10,54 @@
  * @param {int} [time] default is 1000
  */
 function MoveMessageStep(toElement, position, time) {
-	var div = $('#help-current-task'), $this = this;
+    "use strict";
 
-	if (typeof time == 'undefined') {
-		time = 1000;
-	}
+    var $div = $('#help-current-task');
 
-	this._toElement = toElement;
-	this._position = position;
+    if (typeof time == 'undefined') {
+        time = 1000;
+    }
 
-	/**
-	 * run method
-	 * @type Function
-	 */
-	this.run = function() {
-		var toElement = $($this._toElement);
 
-		var offset = toElement.offset();
-		var left = offset.left;
-		var top = offset.top;
+    /**
+     * run method
+     * @type Function
+     */
+    this.run = function() {
+        var $toElement = $(toElement);
 
-		switch ($this._position) {
-			case 1:
-				top -= div.height() + 20;
-				break;
+        var offset = $toElement.offset();
+        var left = offset.left;
+        var top = offset.top;
 
-			case 2:
-				left += toElement.width() + 50;
-				break;
+        switch (position) {
+            case 1:
+                top -= $div.height() + 20;
+                break;
 
-			case 3:
-				top += toElement.height() + 20;
-				break;
+            case 2:
+                left += $toElement.width() + 50;
+                break;
 
-			case 4:
-				left -= div.width() + 50;
-				break;
-		}
+            case 3:
+                top += $toElement.height() + 20;
+                break;
 
-		div.animate({
-			'left': Math.round(left),
-			'top': Math.round(top)
-		}, Math.round($this.time*0.9));
-	};
+            case 4:
+                left -= $div.width() + 50;
+                break;
+        }
 
-	/**
-	 * time for this step
-	 * @type int
-	 */
-	this.time = time;
+        $div.animate({
+            'left': Math.round(left),
+            'top': Math.round(top)
+        }, Math.round(time*0.9));
+    };
+
+
+    /**
+     * time for this step
+     * @type int
+     */
+    this.time = time;
 }

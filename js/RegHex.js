@@ -7,6 +7,7 @@
  * @class
  */
 var RegHex = new function() {
+    "use strict";
 
     // pointer to myself
     var self = this;

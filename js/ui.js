@@ -6,17 +6,17 @@
  */
 
 
+// unique counter for block id
+var matchingBlockId = 1;
+
+// pointer to last inserted match text
+var lastInsertedMatchText = null;
+
 $(function() {
     "use strict";
 
     // counter, length
     var i, l;
-
-    // unique counter for block id
-    var matchingBlockId = 1;
-
-    // pointer to last inserted match text
-    var lastInsertedMatchText = null;
 
     // reset textarea and checkboxes(for firefox)
     $('textarea').val('');
@@ -179,12 +179,12 @@ $(function() {
             if (parts[0] == 'f') {
                 var flags = parts[1].split(',');
                 for (var z = 0; z < flags.length; z++) {
-                    $('#option-' + decodeURI(flags[z])).attr('checked', true);
+                    $('#option-' + decodeURIComponent(flags[z])).attr('checked', true);
                 }
 
             // regex part
             } else if (parts[0] == 'r') {
-                $('#regex').val(decodeURI(parts[1]));
+                $('#regex').val(decodeURIComponent(parts[1]));
 
             // matchtext part
             } else if (match = parts[0].match(/^m(\d)$/)) {
@@ -193,7 +193,7 @@ $(function() {
                 } else {
                     $('#add-matchtext').click();
                 }
-                lastInsertedMatchText.setText(decodeURI(parts[1]));
+                lastInsertedMatchText.setText(decodeURIComponent(parts[1]));
             }
         }
     }

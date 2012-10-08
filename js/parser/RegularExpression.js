@@ -5,10 +5,10 @@
  *
  * @class RegularExpression
  * @constructor
- * @param {String} name Parser name
- * @param {Flag[]} flags Allowed flags
- * @param {String[][]} urls Array of info urls
- * @param {Function} parser function to parse
+ * @param {String} _name Parser name
+ * @param {Flag[]} _flags Allowed flags
+ * @param {String[][]} _urls Array of info urls
+ * @param {Function} _parser function to parse
  */
 function RegularExpression(_name, _flags, _urls, _parser) {
     "use strict";
