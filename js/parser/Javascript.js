@@ -95,7 +95,7 @@ function ParserJavascript(config, text, expression, flags, callback) {
             "matchText": text,
             "error": e.message,
             "matchings": [],
-            "progamming": "",
+            "progamming": ""
         });
     }
 }

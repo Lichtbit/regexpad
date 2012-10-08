@@ -57,7 +57,7 @@ var config = {
             [
                 ['http://en.wikipedia.org/wiki/Grep', 'Wikipedia'],
                 ['http://www.regular-expressions.info/gnu.html', 'Usage information'],
-                ['http://pubs.opengroup.org/onlinepubs/9699919799/utilities/grep.html', 'Commands & Utilities Reference'],
+                ['http://pubs.opengroup.org/onlinepubs/9699919799/utilities/grep.html', 'Commands & Utilities Reference']
             ],
             ParserAjax
         ), new RegularExpression(
