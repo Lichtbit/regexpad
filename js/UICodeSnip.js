@@ -3,14 +3,15 @@
  * @constructor
  */
 function UICodeSnip() {
+    "use strict";
 
-	/**
-	 * Update the code block
-	 * @param {String} code
-	 */
-	this.update = function(code) {
-		var cb = $('#codeblock');
-		cb.val(code);
-		cb.show();
-	}
+    var $cb = $('#codeblock');
+
+    /**
+     * Update the code block
+     * @param {String} code
+     */
+    this.update = function(code) {
+        $cb.val(code).show();
+    }
 }

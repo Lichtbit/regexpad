@@ -4,18 +4,19 @@
  * @constructor
  */
 function UIMessageService() {
+    "use strict";
 
-	var element = $('#regex-error');
+    var $element = $('#regex-error');
 
-	/**
-	 * Handle incoming message
-	 * @param UserMessage
-	 */
-	this.notify = function(message) {
-		if (typeof message == 'undefined') {
-			element.slideUp();
-			return;
-		}
-		element.text(message).slideDown();
-	}
+    /**
+     * Handle incoming message
+     * @param UserMessage
+     */
+    this.notify = function(message) {
+        if (typeof message == 'undefined') {
+            $element.slideUp();
+            return;
+        }
+        $element.text(message).slideDown();
+    }
 }

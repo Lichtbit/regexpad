@@ -5,187 +5,199 @@
  * @author Georg Limbach <georf@dev.mgvmedia.com>
  */
 
-var matchingBlockId = 1,
-  lastInsertedMatchText = null;
 
 $(function() {
-	// reset textarea and checkboxes(for firefox)
-	$('textarea').val('');
+    "use strict";
 
-	// Register existing match text fields
-	$('.matchtext-block').each(function() {
-		lastInsertedMatchText = new UIMatchText($(this), false);
-	});
+    // counter, length
+    var i, l;
 
-	// Create and register a message service
-	RegHex.registerMessageService(new UIMessageService());
+    // unique counter for block id
+    var matchingBlockId = 1;
 
-	// Create and register a code block service
-	var codeSnip = new UICodeSnip();
-	RegHex.registerCodeSnip(codeSnip);
+    // pointer to last inserted match text
+    var lastInsertedMatchText = null;
 
-	// Bundle flags into an array
-	var bundleFlags = function() {
-		var flags = [];
-		$('.parser-option').each(function(i, el) {
-			if ($(el).is(':checked')) {
-				flags.push($(el).attr('name').substr(7));
-			}
-		});
-		return flags;
-	};
+    // reset textarea and checkboxes(for firefox)
+    $('textarea').val('');
 
-	// Notify if regular expression changes
-	$('#regex').bind('keyup blur input cut paste', function() {
-		RegHex.updateRegularExpression($(this).val(), bundleFlags());
-	});
+    // Register existing match text fields
+    $('.matchtext-block').each(function() {
+        lastInsertedMatchText = new UIMatchText($(this), false);
+    });
 
-	$('#add-matchtext').click(function() {
-		// generate new id
-			var newid = matchingBlockId++;
+    // Create and register a message service
+    RegHex.registerMessageService(new UIMessageService());
 
-			// clone block
-			var block = $('#matching-blocks').find('.matchtext-block').first()
-					.clone();
-			block.find('label').html('&nbsp;').attr('for', 'newid' + newid);
-			block.find('.textarea').text('').attr('id', 'newid' + newid);
-			block.find('.matchtext-div').html('&nbsp;');
+    // Create and register a code block service
+    var codeSnip = new UICodeSnip();
+    RegHex.registerCodeSnip(codeSnip);
 
-			// handle events with object
-			lastInsertedMatchText = new UIMatchText(block, true);
-		});
+    // Bundle flags into an array
+    var bundleFlags = function() {
+        var flags = [];
+        $('.parser-option').each(function(i, el) {
+            if ($(el).is(':checked')) {
+                flags.push($(el).attr('name').substr(7));
+            }
+        });
+        return flags;
+    };
 
-	var parserType = $('#parser-type');
+    // Notify if regular expression changes
+    $('#regex').bind('keyup blur input cut paste', function() {
+        RegHex.updateRegularExpression($(this).val(), bundleFlags());
+    });
 
-	// Add parsers to select field
-	for ( var i = 0; i < config.parsers.length; i++) {
-		parserType.append($('<option value="' + config.parsers[i].getName() + '">'
-				+ config.parsers[i].getName() + '</option>'));
-	}
+    $('#add-matchtext').click(function() {
+        // generate new id
+            var newid = matchingBlockId++;
 
-	// bind parser type to RegHex
-	parserType.change(function() {
-		// update regex
-		RegHex.changeParserType($('#parser-type').val());
+            // clone block
+            var block = $('#matching-blocks').find('.matchtext-block').first()
+                    .clone();
+            block.find('label').html('&nbsp;').attr('for', 'newid' + newid);
+            block.find('.textarea').text('').attr('id', 'newid' + newid);
+            block.find('.matchtext-div').html('&nbsp;');
 
-		// update about window
-		$('.current-parser-name').text($('#parser-type').val());
+            // handle events with object
+            lastInsertedMatchText = new UIMatchText(block, true);
+        });
 
-		// delete old flags
-		$('#regex-options').html('');
+    var parserType = $('#parser-type');
 
-		// enable usefull options
-		var o = RegHex.getRegularExpression().getFlags();
-		for (var i = 0; i < o.length; i++) {
-			$('#regex-options').append(o[i].getLi());
-		}
-
-		// Trigger regex change whenever an option changes
-		$('#regex-options input[type="checkbox"]').change(function() {
-			$('#regex').trigger('keyup');
-		});
-
-		// set new info link
-		var l = RegHex.getRegularExpression().getUrls();
-		var ul = '';
-		for ( var i = 0; i < l.length; i++) {
-			ul += '<li><a href="' + l[i][0] + '">' + l[i][1] + '</a></li>';
-		}
-		if (ul != '') {
-			$('#additional-parser-info').html('<ul>' + ul + '</ul>');
-		} else {
-			$('#additional-parser-info').html(ul);
-		}
-
-		codeSnip.update('');
-
-		// trigger a new parse event
-		$('#regex').keyup();
-
-    // update uri hash
-    window.location.hash = '#p-' + $('#parser-type').val();
-
-	});
-
-	// bind Help class to link
-	$('#button-tour').click(function() {
-		new Help();
-    return false;
-	});
-
-	// permalink
-	$('#button-permalink').click(function() {
-    var reg = RegHex.getRegularExpression(),
-      flags = reg.getSetFlags(),
-      regex = reg.getRegularExpression(),
-      matchtexts = RegHex.getMatchTexts(),
-      search = '?r=' + encodeURI(regex) + '&f=',
-      i;
-
-    for (i = 0; i < flags.length; i++) {
-      search += encodeURI(flags[i]);
-      if (i+1 < flags.length) {
-        search += encodeURI(',');
-      }
+    // Add parsers to select field
+    for (i = 0, l = config.parsers.length; i < l; i++) {
+        parserType.append($('<option value="' + config.parsers[i].getName() + '">'
+                + config.parsers[i].getName() + '</option>'));
     }
 
-    for (i = 0; i < matchtexts.length; i++) {
-      search += '&m' + i + '=' + encodeURI(matchtexts[i].getText());
-    }
-    window.location.search = search;
-    return false;
-	});
+    // bind parser type to RegHex
+    parserType.change(function() {
+        var i, le;
 
-  // parser type from uri
-  var hash = window.location.hash,
-    match;
-  if (match = hash.match(/^#p-(.+)$/)) {
-    var correct = false;
-    for ( var i = 0; i < config.parsers.length; i++) {
-      if (config.parsers[i].getName() == match[1]) {
-        correct = true;
-        break;
-      }
-    }
-    if (correct) {
-      parserType.find('option').each(function() {
-        var self = $(this);
-        if (self.val() == match[1]) {
-          self.attr('selected', true);
+
+        // update regex
+        RegHex.changeParserType($('#parser-type').val());
+
+        // update about window
+        $('.current-parser-name').text($('#parser-type').val());
+
+        // delete old flags
+        $('#regex-options').html('');
+
+        // enable usefull options
+        var o = RegHex.getRegularExpression().getFlags();
+        for (i = 0, le = o.length; i < le; i++) {
+            $('#regex-options').append(o[i].getLi());
+        }
+
+        // Trigger regex change whenever an option changes
+        $('#regex-options input[type="checkbox"]').change(function() {
+            $('#regex').trigger('keyup');
+        });
+
+        // set new info link
+        var l = RegHex.getRegularExpression().getUrls();
+        var ul = '';
+        for (i = 0, le = l.length; i < le; i++) {
+            ul += '<li><a href="' + l[i][0] + '">' + l[i][1] + '</a></li>';
+        }
+        if (ul != '') {
+            $('#additional-parser-info').html('<ul>' + ul + '</ul>');
         } else {
-          self.removeAttr('selected');
+            $('#additional-parser-info').html(ul);
         }
-      });
+
+        codeSnip.update('');
+
+        // trigger a new parse event
+        $('#regex').keyup();
+
+        // update uri hash
+        window.location.hash = '#p-' + $('#parser-type').val();
+
+    });
+
+    // bind Help class to link
+    $('#button-tour').click(function() {
+        new Help();
+    return false;
+    });
+
+
+    // bind permalink handler
+    new Permalink($('#button-permalink'));
+
+
+    /*
+     * catch parser type from uri hash
+     * url should end as follow:
+     *  #p-javascript
+     * or
+     *  #p-sun-java
+     */
+    var match;
+    if (match = window.location.hash.match(/^#p-(.+)$/)) {
+        parserType.find('option').each(function() {
+            var self = $(this);
+            if (self.val() == match[1]) {
+                self.attr('selected', true);
+            } else {
+                self.removeAttr('selected');
+            }
+        });
     }
-  }
 
-  // trigger first change
-  parserType.change();
+    // trigger first change
+    parserType.change();
 
-  // parse search parameter for values
-  var parm = window.location.search.substring(1).split('&'),
-    match, first = true;
-  for (var i = 0; i < parm.length; i++) {
-    var parts = parm[i].split('=');
-    if (parts.length == 2 && parts[1] != '') {
-      if (parts[0] == 'f') {
-        var flags = parts[1].split(',');
-        for (var z = 0; z < flags.length; z++) {
-          $('#option-' + decodeURI(flags[z])).attr('checked', true);
+
+    /*
+     * handle permalinks
+     *
+     * a permalink have some parts:
+     *      r
+     *      => regex {String}
+     *
+     *      f
+     *      => flags {String[]}
+     *
+     *      m0, m1, m2
+     *      => matchtexts {String}
+     *
+     * first parse search parameter for values
+     */
+    var parm = window.location.search.substring(1).split('&'),
+        match, first = true;
+
+    for (i = 0, l = parm.length; i < l; i++) {
+        var parts = parm[i].split('=');
+        if (parts.length == 2 && parts[1] != '') {
+
+            // flag part
+            if (parts[0] == 'f') {
+                var flags = parts[1].split(',');
+                for (var z = 0; z < flags.length; z++) {
+                    $('#option-' + decodeURI(flags[z])).attr('checked', true);
+                }
+
+            // regex part
+            } else if (parts[0] == 'r') {
+                $('#regex').val(decodeURI(parts[1]));
+
+            // matchtext part
+            } else if (match = parts[0].match(/^m(\d)$/)) {
+                if (first) {
+                    first = false;
+                } else {
+                    $('#add-matchtext').click();
+                }
+                lastInsertedMatchText.setText(decodeURI(parts[1]));
+            }
         }
-      } else if (parts[0] == 'r') {
-        $('#regex').val(decodeURI(parts[1]));
-      } else if (match = parts[0].match(/^m(\d)$/)) {
-        if (first) {
-          first = false;
-        } else {
-          $('#add-matchtext').click();
-        }
-        lastInsertedMatchText.setText(decodeURI(parts[1]));
-      }
     }
-  }
 
-  // update first time
-  $('#regex').trigger('keyup');
+    // update first time
+    $('#regex').trigger('keyup');
 });
