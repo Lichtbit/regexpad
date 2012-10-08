@@ -12,7 +12,7 @@ function UIMatchText($block, deleteButton) {
     "use strict";
 
     // pointer to myself
-    var selt = this;
+    var self = this;
 
     // set pointer to special areas
     var $textarea = $block.find('.textarea');

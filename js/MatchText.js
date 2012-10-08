@@ -6,88 +6,90 @@
  * @constructor
  * @param UIMatchField observer
  */
-function MatchText(observer) {
+function MatchText(_observer) {
+    "use strict";
 
-	this.observer = observer;
-	this.text = "";
-  this._responseCallback = function(){};
-
-  /**
-   * Sets the default response callback
-   * @param {Function}
-   */
-  this.setResponseCallback = function (callback) {
-    this._responseCallback = callback;
-  };
-
-	/**
-	 * Sets the current text
-	 *
-	 * @param string
-	 * @return this
-	 */
-	this.setText = function (text) {
-		this.text = text;
-		return this;
-	};
-
-  /**
-   * Returns the current text
-   * @returns {String}
-   */
-  this.getText = function () {
-    return this.text;
-  };
-
-	/**
-	 * Implements the Observer pattern
-	 *
-	 * @param UIMatchField
-	 * @return this;
-	 */
-	this.notify = function (matchTextField, errorCallback, responseCallback) {
+    // pointer to myself
     var self = this;
 
-		if (typeof matchTextField == 'undefined') {
-			matchTextField = this.observer;
-    }
+    // content of match text
+    var _text = "";
 
-    if (typeof errorCallback == 'undefined') {
-      errorCallback = function(value) {};
-    }
+    // callback for responses
+    var _responseCallback = function(){};
 
-    if (typeof responseCallback == 'undefined') {
-      responseCallbackI = this._responseCallback;
-    } else {
-      responseCallbackI = function (value) {
-        self._responseCallback(value);
-        responseCallback(value);
-      }
-    }
 
-		// set new value
-		this.setText(matchTextField.getText());
+    /**
+     * Sets the default response callback
+     * @param {Function}
+     */
+    this.setResponseCallback = function (callback) {
+        _responseCallback = callback;
+    };
 
-		// parse expression
-		RegHex.getRegularExpression().parse(this.text, function(data) {
-			if (typeof data.error != 'boolean') {
-				errorCallback(data.error);
-			}
-			matchTextField.notify(data);
-			responseCallbackI(data);
-		});
 
-		return this;
-	};
+    /**
+     * Sets the current text
+     *
+     * @param string
+     * @return this
+     */
+    this.setText = function (text) {
+        _text = text;
+        return this;
+    };
 
-	/**
-	 * Set all pointer counts to zero
-	 */
-	this.finalize = function () {
-		for(var key in this) {
-			if (typeof this[key] != 'function') {
-				delete(this[key]);
-			}
-		}
-	};
+
+    /**
+     * Returns the current text
+     * @returns {String}
+     */
+    this.getText = function () {
+        return _text;
+    };
+
+
+    /**
+     * Implements the Observer pattern
+     *
+     * @param UIMatchField
+     * @return this;
+     */
+    this.notify = function (matchTextField, errorCallback, responseCallback) {
+
+        // internal callback
+        var responseCallbackI;
+
+        // set defaults
+        if (typeof matchTextField == 'undefined') {
+            matchTextField = _observer;
+        }
+
+        if (typeof errorCallback == 'undefined') {
+          errorCallback = function(value) {};
+        }
+
+        if (typeof responseCallback == 'undefined') {
+            responseCallbackI = _responseCallback;
+        } else {
+            responseCallbackI = function (value) {
+                _responseCallback(value);
+                responseCallback(value);
+            }
+        }
+
+        // set new value
+        this.setText(matchTextField.getText());
+
+        // parse expression
+        RegHex.getRegularExpression().parse(_text, function(data) {
+            if (typeof data.error != 'boolean') {
+                errorCallback(data.error);
+            }
+            matchTextField.notify(data);
+            responseCallbackI(data);
+        });
+
+        return this;
+    };
 }
