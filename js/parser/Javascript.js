@@ -18,6 +18,10 @@ function ParserJavascript(config, text, expression, flags, callback) {
         return text.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
     };
 
+    var escapeExpression = function( text ) {
+        return text.replace(/([^\\])\//g, "$1\\/");
+    };
+
     // search flags
     var flagString = "";
 
@@ -80,10 +84,16 @@ function ParserJavascript(config, text, expression, flags, callback) {
             "error": false,
             "matchings": matches,
             "programming":
+                "if (/" + escapeExpression(expression) + "/" + flagString + ".test(" + escapeString(text) + ")) {\n" +
+                "  // ...\n" +
+                "}\n" +
+                "\n" +
+                "// or...\n" +
+                "\n" +
                 "var text = '" + escapeString(text) + "';\n" +
                 "var match;\n" +
                 "\n" +
-                "while ((match = text.match(/" + expression + "/" + flagString + "))) {\n" +
+                "while ((match = text.match(/" + escapeExpression(expression) + "/" + flagString + "))) {\n" +
                 "  console.log(match[0], match);\n" +
                 "}\n"
         });
