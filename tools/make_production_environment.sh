@@ -24,3 +24,6 @@ cat ../index.html | php -r "file_put_contents('php://stdout', preg_replace('/<!-
 # move jsdoc to right place
 rm -rf ../doc
 mv jsdoc-toolkit/out/jsdoc ../doc
+
+# remove git support for this installation
+rm -rf ../.git
