@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd $(cd $(dirname $0); pwd -P)
+
 java -jar compiler.jar \
 --js=../../js/parser/RegularExpression.js \
 --js=../../js/parser/Javascript.js \

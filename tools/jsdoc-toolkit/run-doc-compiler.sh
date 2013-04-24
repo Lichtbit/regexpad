@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd $(cd $(dirname $0); pwd -P)
+
 java -jar jsrun.jar app/run.js \
 ../../js/parser/RegularExpression.js \
 ../../js/parser/Javascript.js \
