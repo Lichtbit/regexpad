@@ -64,7 +64,7 @@ class InternParser {
 				'  print_r($result);'."\n".
 				'}'."\n";
 
-			if (preg_match_all($fullRegexp, $text, $result)) {
+			if (@preg_match_all($fullRegexp, $text, $result)) {
 
 				$index = 0;
 
@@ -76,7 +76,7 @@ class InternParser {
 					$match->text = $result[0][$int];
 
 					// search for index
-					$currentIndex = strpos($currentText, $match->text);
+					$currentIndex = @strpos($currentText, $match->text);
 					$index += $currentIndex;
 					$match->index = $index;
 					$index += strlen($match->text);
@@ -98,11 +98,11 @@ class InternParser {
 				'  print_r($result);'."\n".
 				'}'."\n";
 
-			if (preg_match($fullRegexp, $text, $result)) {
+			if (@preg_match($fullRegexp, $text, $result)) {
 				$output->matchings[0] = (object) array();
 				$output->matchings[0]->text = $result[0];
 				$output->matchings[0]->subexpressions = $result;
-				$output->matchings[0]->index = strpos($text, $result[0]);
+				$output->matchings[0]->index = @strpos($text, $result[0]);
 			} else {
 				$output->error = self::checkError();
 			}
