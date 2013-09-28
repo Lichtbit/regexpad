@@ -1,8 +1,6 @@
 /**
  * Generate a live help
  *
- * @author Georg Limbach <georf@dev.mgvmedia.com>
- *
  * @constructor
  */
 
@@ -23,14 +21,17 @@ function Help() {
     // pointer to last timeout for canceling
     var _lastTimeout = null;
 
+    // milliseconds between each typed character
+    var _typingTimeout = 200;
+
     // steps for the help tour
     var _steps = [
 
         new SetMessageStep('Welcome to the '+reghex+' tour'),
-        new WaitStep(5000),
+        new WaitStep(3000),
 
 
-        new SetMessageStep('Select the language you want to use'),
+        new SetMessageStep('Select your programming language.'),
         new MoveMessageStep('#parser-type', 4),
         new HighlightStep('#parser-type'),
         new Step(function() {
@@ -39,23 +40,22 @@ function Help() {
             .fadeOut(500).fadeIn(500)
             .fadeOut(500).fadeIn(500)
             .fadeOut(500).fadeIn(500);
-        }, 7500),
+        }, 4500),
         new LowlightStep('#parser-type'),
 
 
-        new SetMessageStep('Write an example text to be matched by your regular expression'),
+        new SetMessageStep('Write a string to be matched.'),
         new HighlightStep('.matchtext-block:nth-child(1)'),
         new MoveMessageStep('#matchtext', 4, 1500),
-        new WaitStep(2000),
+        new WaitStep(500),
         new Step(function() {
             // add a match text
-            new TypeInto($('#matchtext').focus(), 'abb', 500);
-        }, 7000),
-        new WaitStep(1000),
+            new TypeInto($('#matchtext').focus(), '2013-09-28', _typingTimeout);
+        }, 5000),
         new LowlightStep('.matchtext-block:nth-child(1)'),
 
 
-        new SetMessageStep('Add another example area to match a different text'),
+        new SetMessageStep('Add another field...'),
         new HighlightStep('#add-matchtext'),
         new MoveMessageStep('#add-matchtext', 4, 3000),
         new Step(function() {
@@ -64,49 +64,36 @@ function Help() {
             .fadeOut(500).fadeIn(500)
             .fadeOut(500).fadeIn(500)
             .fadeOut(500).fadeIn(500, function() {
-
                 $('#add-matchtext').click();
             });
-        }, 4500),
+        }, 3000),
         new LowlightStep('#add-matchtext'),
 
 
-        new SetMessageStep('Now you can fill in another example to be matched'),
+        new SetMessageStep('... for more example strings.'),
         new MoveMessageStep('.matchtext-block:nth-child(2)', 4, 2000),
         new HighlightStep('.matchtext-block:nth-child(2)'),
         new Step(function() {
             // add a match text
-            new TypeInto($('#newid' + (matchingBlockId-1)).focus(), 'test abc ade', 300);
-        }, 10000),
+            new TypeInto($('#newid' + (matchingBlockId-1)).focus(), 'Date: 2013-9-28', _typingTimeout);
+        }, 5000),
         new LowlightStep('.matchtext-block:nth-child(2)'),
 
 
-        new SetMessageStep('Here you can enter your regular expression'),
+        new SetMessageStep('Enter your regular expression.'),
         new HighlightStep('#regex'),
         new MoveMessageStep('#regex', 3),
         new Step(function() {
             // add a regular expression
             $('#regex').focus();
-            new TypeInto($('#regex'), 'a([a-z]+)', 300);
-        }, 10000),
+            new TypeInto($('#regex'), '\\d{4}-\\d\\d?-\\d\\d?', _typingTimeout);
+        }, 7000),
         new LowlightStep('#regex'),
 
 
         new HighlightStep('.matchtext-block'),
-        new SetMessageStep('Look at your sample text: the green background highlights the matched text'),
-        new WaitStep(10000),
-        //~ new MoveStep('Subexpression show all the parts of the matched text', '.navigate-match-section:first', 500, function() {return $('.matchtext-block:nth-child(1)'); }),
-//~
-        //~ new Step('Subexpression show all the parts of the matched text', function() {
-            //~ // let plus blink 3 times
-            //~ $('.navigate-match-section:first .match-more-info a').focus()
-            //~ .fadeOut(300).fadeIn(300)
-            //~ .fadeOut(300).fadeIn(300)
-            //~ .fadeOut(300).fadeIn(300, function() {
-                //~ $('.navigate-match-section:first .match-more-info a').click();
-            //~ });
-//~
-        //~ }, 15000, function() { return $('.navigate-match-section:first, .more-information.overlay.group');}),
+        new SetMessageStep('Matched parts are highlighted with green background.'),
+        new WaitStep(5000),
 
         new SetMessageStep('Now it\'s your turn, give it a try!'),
         new MoveMessageStep('header', 3, 2000),
@@ -152,9 +139,9 @@ function Help() {
     // close all fields
     $('.remove-matchtext').click();
 
-	// initiation
-	$('#help-current-task').html('').show();
+    // initiation
+    $('#help-current-task').html('').show();
 
     // run first step
-	_runStep(0);
+    _runStep(0);
 }
