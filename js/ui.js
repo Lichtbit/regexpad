@@ -49,6 +49,11 @@ $(function() {
         RegHex.updateRegularExpression($(this).val(), bundleFlags());
     });
 
+    // Resize Matchtext Divs with textarea
+    $('textarea.matchtext').live('mouseup', function() {
+        $(this).next('.matchtext-div').css({ height: $(this).outerHeight() });
+    });
+
     $('#add-matchtext').click(function() {
         // generate new id
             var newid = matchingBlockId++;

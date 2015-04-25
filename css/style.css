@@ -203,7 +203,6 @@ input, textarea, button, .matchtext-div, .textarea, select {
 	border: 1px solid;
 	border-color: #dddddd #bbbbbb #999999;
 	padding: 2px 4px;
-	resize: none;
 	box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; -ms-box-sizing: border-box; -o-box-sizing: border-box;
 }
 select {
