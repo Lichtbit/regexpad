@@ -19,7 +19,7 @@ $JSDOC
 mv closure-compiler/out.js ../js/min.js
 
 # change index.html to minified version
-cat ../index.html | php -r "file_put_contents('php://stdout', preg_replace('/<!-- files for compiling -->.*<!-- end files for compiling -->/ms', '<script defer src=\"js/min.js\"></script>', file_get_contents('php://stdin')));" > ../index.html
+cat ../index.html | php -r 'file_put_contents('\''php://stdout'\'', preg_replace('\''/<!-- files for compiling -->.*<!-- end files for compiling -->/ms'\'', '\''<script defer src="js/min.js"></script>'\'', file_get_contents('\''php://stdin'\'')));' > ../index.html
 
 # move jsdoc to right place
 rm -rf ../doc
